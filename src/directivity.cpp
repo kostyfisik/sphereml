@@ -1,6 +1,6 @@
 
 /**
-Copyright © 2019 Alexey A. Shcherbakov. All rights reserved.
+Copyright ï¿½ 2019 Alexey A. Shcherbakov. All rights reserved.
 
 This file is part of sphereml.
 
@@ -50,10 +50,14 @@ double evaluate_directivity(const std::vector<double> RL_in,
 
         // initialize spherical multilayer:
     // we can place some variables on the stack in order to simplify memory management
-    NL = RL_in.size(); 
-    double RL[NL], kRL[NL];
-    Complex eL[NL+1];
+    NL = RL_in.size();
+    double *RL, *kRL;
+    Complex *eL;
     Matrix M1(4,2*N), M2(4,2*N), **M;
+
+    RL = new double[NL]; kRL = new double[NL];
+    eL = new Complex[NL+1];
+
 
     for (int i=0; i<NL+1; ++i) eL[i] = eL_in[i];
     for (int i=0; i<NL; ++i) RL[i] = RL_in[i];
@@ -96,7 +100,8 @@ double evaluate_directivity(const std::vector<double> RL_in,
     }
 
     for (int i=0; i<NL; ++i) delete M[i];
-    delete[] M; 
-    
+    delete[] M;
+    delete[]RL; delete[]kRL; delete[]eL;
+
     return MS.directivity(VS2,th,ph,1.);
 }
